@@ -12,7 +12,7 @@
 
 <meta name="author" content="Mark van der Loo" />
 
-<meta name="date" content="2017-06-14" />
+<meta name="date" content="2017-08-08" />
 
 <title>Getting started with lumberjack</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Getting started with lumberjack</h1>
 <h4 class="author"><em>Mark van der Loo</em></h4>
-<h4 class="date"><em>2017-06-14</em></h4>
+<h4 class="date"><em>2017-08-08</em></h4>
 
 
 <div id="TOC">
@@ -78,6 +78,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#installation">Installation</a></li>
 <li><a href="#the-lumberjack-workflow">The lumberjack workflow</a></li>
 <li><a href="#changing-the-logger">Changing the logger</a></li>
+<li><a href="#available-loggers">Available loggers</a><ul>
+<li><a href="#in-the-lumberjack-package">In the lumberjack package</a></li>
+<li><a href="#in-other-packages">In other packages</a></li>
+</ul></li>
 <li><a href="#changing-logger-behaviour">Changing logger behaviour</a><ul>
 <li><a href="#setting-options-for-the-logger">Setting options for the logger</a></li>
 <li><a href="#setting-options-for-the-output">Setting options for the output</a></li>
@@ -92,7 +96,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>This vignette will show you how to get started and what the default loggers do. The <a href="extending.html">extending lumberjack</a> vignette explains how to build your own loggers.</p>
 <div id="installation" class="section level2">
 <h2>Installation</h2>
-<p>The basic version can be installed with</p>
+<p>Install the package with</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;lumberjack&quot;</span>)</code></pre></div>
 </div>
 <div id="the-lumberjack-workflow" class="section level2">
@@ -103,11 +107,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="st">  </span><span class="kw">identity</span>() %&gt;&gt;%
 <span class="st">  </span><span class="kw">head</span>() %&gt;&gt;%
 <span class="st">  </span><span class="kw">dump_log</span>(<span class="dt">stop=</span><span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## Dumped a log at /tmp/RtmpcnsPBw/Rbuild316977a77a36/lumberjack/vignettes/simple_log.csv</code></pre>
+<pre><code>## Dumped a log at /tmp/RtmpWqYnrK/Rbuild1d393d11eb39/lumberjack/vignettes/simple_log.csv</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">read.csv</span>(<span class="st">&quot;simple_log.csv&quot;</span>)</code></pre></div>
 <pre><code>##   step                time expression changed
-## 1    1 2017-06-14 11:39:37 identity()   FALSE
-## 2    2 2017-06-14 11:39:37     head()    TRUE</code></pre>
+## 1    1 2017-08-08 11:03:32 identity()   FALSE
+## 2    2 2017-08-08 11:03:32     head()    TRUE</code></pre>
 <p>Lets go through this step by step to see what happened. The start of the script defines an output variable <code>out</code> and passes <code>women</code> to the lumberjack (<code>%&gt;&gt;%</code>). Next, the function <code>start_log</code> makes sure that logging starts from there. We are now ready to start performing logged transformations on our dataset. First, we apply the <code>identity</code> function, which does exactly nothing. Then, the <code>head</code> function selects the first six rows in of the dataset and <code>dump_log(stop=TRUE)</code> writes the log to a csv file, which we then read in. The optional argument <code>stop=TRUE</code> signals that no logging is necessary for following activities.</p>
 <p>The resulting data frame contains a step number, a timestamp, the expression evaluated to transform the data, and an indicator whether the data had changed at all. As expected, the <code>identity</code> function hasn’t changed anything and the <code>head</code> function cuts of all records below the sixth row.</p>
 <p>You have now seen the most important functions of the package. Let’s summarize them.</p>
@@ -129,20 +133,40 @@ out &lt;-<span class="st"> </span>women %&gt;&gt;%
 <span class="st">  </span>{.$height[<span class="dv">1</span>] &lt;-<span class="st"> </span><span class="dv">60</span>; .} %&gt;&gt;%
 <span class="st">  </span><span class="kw">head</span>(<span class="dv">13</span>) %&gt;&gt;%
 <span class="st">  </span><span class="kw">dump_log</span>(<span class="dt">file=</span>logfile, <span class="dt">stop=</span><span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## Dumped a log at /tmp/RtmpxXXEYy/file317e7af793d1.csv</code></pre>
+<pre><code>## Dumped a log at /tmp/Rtmpt9QrBa/file1d4c768f6337.csv</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">read.csv</span>(logfile)</code></pre></div>
 <pre><code>##   step                     time                         expression key
-## 1    1 2017-06-14 11:39:37 CEST {\n    .$height[1] &lt;- 60\n    .\n}   1
-## 2    2 2017-06-14 11:39:37 CEST                           head(13)  14
-## 3    2 2017-06-14 11:39:37 CEST                           head(13)  14
-## 4    2 2017-06-14 11:39:37 CEST                           head(13)  15
-## 5    2 2017-06-14 11:39:37 CEST                           head(13)  15
+## 1    1 2017-08-08 11:03:32 CEST {\n    .$height[1] &lt;- 60\n    .\n}   1
+## 2    2 2017-08-08 11:03:32 CEST                           head(13)  14
+## 3    2 2017-08-08 11:03:32 CEST                           head(13)  14
+## 4    2 2017-08-08 11:03:32 CEST                           head(13)  15
+## 5    2 2017-08-08 11:03:32 CEST                           head(13)  15
 ##   variable old new
 ## 1   height  58  60
 ## 2   height  71  NA
 ## 3   weight 159  NA
 ## 4   height  72  NA
 ## 5   weight 164  NA</code></pre>
+</div>
+<div id="available-loggers" class="section level2">
+<h2>Available loggers</h2>
+<p>Here’s a short overview of known loggers.</p>
+<div id="in-the-lumberjack-package" class="section level3">
+<h3>In the lumberjack package</h3>
+<ul>
+<li><code>simple</code> Just check whether data has changed.</li>
+<li><code>cellwise</code> Track changes per cell (incl. old value, new value)</li>
+<li><code>filedump</code> Dump a file after each step (including the zeroth step.)</li>
+</ul>
+</div>
+<div id="in-other-packages" class="section level3">
+<h3>In other packages</h3>
+<ul>
+<li><code>validate::lbj_rules</code> Track changes in data quality measured by validation rules (<a href="https://CRAN.R-project.org/package=validate">validate</a> version &gt;= 0.2.0).</li>
+<li><code>validate::lbj_cells</code> Track changes in cell filling and cell counts (<a href="https://CRAN.R-project.org/package=validate">validate</a> version &gt;=0.2.0 ).</li>
+</ul>
+<p>See the <a href="extending.html">extending lumberjack</a> vignette on how to build your own loggers.</p>
+</div>
 </div>
 <div id="changing-logger-behaviour" class="section level2">
 <h2>Changing logger behaviour</h2>
@@ -157,7 +181,7 @@ out &lt;-<span class="st"> </span>women %&gt;&gt;%
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">out &lt;-<span class="st"> </span>dat %&gt;&gt;%<span class="st"> </span><span class="kw">identity</span>() %&gt;&gt;%<span class="st"> </span><span class="kw">dump_log</span>()
 <span class="kw">read.csv</span>(<span class="st">&quot;simple_log.csv&quot;</span>)</code></pre></div>
 <pre><code>##   step                time expression changed
-## 1    1 2017-06-14 11:39:37 identity()   FALSE</code></pre>
+## 1    1 2017-08-08 11:03:32 identity()   FALSE</code></pre>
 <p>Note that the available options depend logger you use. Look at the logger’s helpfile (<code>?simple</code>, <code>?cellwise</code>) to see all options.</p>
 </div>
 <div id="setting-options-for-the-output" class="section level3">
@@ -167,10 +191,10 @@ out &lt;-<span class="st"> </span>women %&gt;&gt;%
 <span class="st">  </span><span class="kw">start_log</span>() %&gt;&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">identity</span>() %&gt;&gt;%<span class="st"> </span>
 <span class="st">  </span><span class="kw">dump_log</span>(<span class="dt">file=</span><span class="st">&quot;log_all_day.csv&quot;</span>)</code></pre></div>
-<pre><code>## Dumped a log at /tmp/RtmpcnsPBw/Rbuild316977a77a36/lumberjack/vignettes/log_all_day.csv</code></pre>
+<pre><code>## Dumped a log at /tmp/RtmpWqYnrK/Rbuild1d393d11eb39/lumberjack/vignettes/log_all_day.csv</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">read.csv</span>(<span class="st">&quot;log_all_day.csv&quot;</span>)</code></pre></div>
 <pre><code>##   step                time expression changed
-## 1    1 2017-06-14 11:39:37 identity()   FALSE</code></pre>
+## 1    1 2017-08-08 11:03:32 identity()   FALSE</code></pre>
 <p>The function <code>dump_log</code> passes most of its arguments to the logger’s <code>$dump()</code> method. See the help file of the logger for the options (<code>?simple</code>, <code>?cellwise</code>).</p>
 </div>
 <div id="options-for-other-loggers" class="section level3">
@@ -202,12 +226,12 @@ women %&gt;&gt;%<span class="st"> </span>{ .$height &lt;-<span class="st"> </spa
 <span class="st">  </span><span class="kw">start_log</span>() %&gt;&gt;%
 <span class="st">  </span>{.*<span class="dv">2</span>} %&gt;&gt;%
 <span class="st">  </span><span class="kw">dump_log</span>(<span class="dt">file=</span><span class="st">&quot;foo.csv&quot;</span>, <span class="dt">stop=</span><span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>## Dumped a log at /tmp/RtmpcnsPBw/Rbuild316977a77a36/lumberjack/vignettes/foo.csv</code></pre>
+<pre><code>## Dumped a log at /tmp/RtmpWqYnrK/Rbuild1d393d11eb39/lumberjack/vignettes/foo.csv</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(out)</code></pre></div>
 <pre><code>## [1] 2 4 6</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">read.csv</span>(<span class="st">&quot;foo.csv&quot;</span>)</code></pre></div>
 <pre><code>##   step                time      expression changed
-## 1    1 2017-06-14 11:39:37 {\n    . * 2\n}    TRUE</code></pre>
+## 1    1 2017-08-08 11:03:32 {\n    . * 2\n}    TRUE</code></pre>
 </div>
 
 

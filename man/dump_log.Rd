@@ -4,7 +4,7 @@
 \alias{dump_log}
 \title{Dump a log}
 \usage{
-dump_log(data, stop = FALSE, ...)
+dump_log(data, stop = TRUE, ...)
 }
 \arguments{
 \item{data}{data set containing a log}

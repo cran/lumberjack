@@ -12,7 +12,7 @@
 
 <meta name="author" content="Mark van der Loo" />
 
-<meta name="date" content="2017-06-14" />
+<meta name="date" content="2017-08-08" />
 
 <title>Extending lumberjack</title>
 
@@ -70,9 +70,22 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Extending lumberjack</h1>
 <h4 class="author"><em>Mark van der Loo</em></h4>
-<h4 class="date"><em>2017-06-14</em></h4>
+<h4 class="date"><em>2017-08-08</em></h4>
 
 
+<div id="TOC">
+<ul>
+<li><a href="#the-lumberjack-logging-api">The lumberjack logging API</a><ul>
+<li><a href="#r6-classes">R6 classes</a></li>
+<li><a href="#reference-classes">Reference classes</a></li>
+</ul></li>
+<li><a href="#advice-for-package-authors">Advice for package authors</a><ul>
+<li><a href="#documenting-logging-objects.">Documenting logging objects.</a></li>
+<li><a href="#adding-lumberjack-to-the-description-of-your-package">Adding lumberjack to the DESCRIPTION of your package</a></li>
+</ul></li>
+<li><a href="#api-overview">API overview</a></li>
+</ul>
+</div>
 
 <p>There are many ways one may want to register changes in data. That is why <code>lumberjack</code> allows you to write your own loggers. Here, you can read how to do it.</p>
 <div id="the-lumberjack-logging-api" class="section level2">
@@ -216,6 +229,27 @@ trivial &lt;- R6Class(&quot;trivial&quot;,
 <pre><code>Enhances: lumberjack</code></pre>
 <p>To your <code>DESCRIPTION</code> file. It can then be found by other users via lumberjack’s CRAN webpage.</p>
 </div>
+</div>
+<div id="api-overview" class="section level2">
+<h2>API overview</h2>
+<p>We briefly summarize the lumberjack API.</p>
+<p>If you implement a logging object, the following methods are <strong>mandatory</strong>:</p>
+<ul>
+<li><code>add(meta, input, output)</code>
+<ul>
+<li><code>meta</code>: a list with components <code>expr</code> (an expression) and <code>src</code> (a string)</li>
+<li><code>input</code>: data before processing</li>
+<li><code>output</code>: data after processing</li>
+</ul></li>
+<li><code>dump(...)</code>
+<ul>
+<li><code>...</code>: options to pass to other methods.</li>
+</ul></li>
+</ul>
+<p>The following methods are <strong>optional</strong></p>
+<ul>
+<li><code>stop()</code> called by <code>stop_log()</code> before removing the logger from the data.</li>
+</ul>
 </div>
 
 

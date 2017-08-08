@@ -3,11 +3,15 @@ msgf <- function(fmt,...){
   message(sprintf(fmt,...))
 }
 
-
-# expression to character
-as_character <- function(x){
-  paste0(capture.output(print(x[[1]])), collapse="\n")
+stopf <- function(fmt,...){
+  stop(sprintf(fmt,...), call. = FALSE)
 }
+
+warnf <- function(fmt, ...){
+  warning(sprintf(fmt, ...), call.=FALSE)
+}
+
+
 
 
 replace <- function(call, match, sub){

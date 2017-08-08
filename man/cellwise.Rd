@@ -19,7 +19,7 @@ file is closed and destroyed when the logger is removed (using
 }
 \section{Creating a logger}{
 
-\code{cellwise$new(verbose=TRUE, file=tempfile())}
+\code{cellwise$new(verbose=TRUE, file=tempfile()}
 \tabular{ll}{
 \code{verbose}\tab toggle verbosity\cr
  \code{key}\tab \code{[character|integer]} index to column that uniquely identifies a row.\cr
@@ -36,14 +36,21 @@ file is closed and destroyed when the logger is removed (using
 }
 }
 
+\section{Getting data from the logger}{
+
+
+\code{$logdata()} Returns a data.frame (it dumps, then reads the current log).
+}
+
 \section{Details}{
 
-At initialization, the cellwise logger opens a connection to a temporary
-file. All logging info is written to that connection. When
+At initialization, the cellwise logger opens a connection to a temporary 
+file. All logging info is written to that connection. When 
 \code{\link{dump_log}} is called, the temporary file is closed, copied to the
 output file, and reopened for writing. The connection is closed automatically
 when the logger is destroyed, for example when calling 
-\code{dump_log(stop=TRUE)}, or \code{stop_log()} in the lumberjack pipeline.
+\code{dump_log(stop=TRUE)} (the default), or \code{stop_log()} in the
+lumberjack pipeline.
 }
 
 \examples{
@@ -59,8 +66,18 @@ out <- women \%>>\%
 
 read.csv(logfile) \%>>\% head()
 
+# work with an externally defined logger.
+iris$id <- seq_len(nrow(iris))
+logger <- cellwise$new(key="id")
+iris \%>>\% 
+  start_log(logger) \%>>\%
+  head() \%>>\%
+  stop_log()
+logger$logdata()
+
+
 }
 \seealso{
-Other loggers: \code{\link{simple}}
+Other loggers: \code{\link{filedump}}, \code{\link{simple}}
 }
 \keyword{datasets}

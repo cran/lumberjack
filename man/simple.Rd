@@ -34,6 +34,11 @@ output.
 }
 }
 
+\section{Get data}{
+
+\code{$logdata()} Returns a \code{data.frame}.
+}
+
 \examples{
 
 logfile <- tempfile(fileext=".csv")
@@ -48,6 +53,7 @@ read.csv(logfile,stringsAsFactors=FALSE)
 
 }
 \seealso{
-Other loggers: \code{\link{cellwise}}
+Other loggers: \code{\link{cellwise}},
+  \code{\link{filedump}}
 }
 \keyword{datasets}

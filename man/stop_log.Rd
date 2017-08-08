@@ -9,8 +9,9 @@ stop_log(data, ...)
 \arguments{
 \item{data}{An R object carrying data}
 
-\item{...}{currently unused}
+\item{...}{Passed to the logger's \code{stop} method, if it exists.}
 }
 \description{
-Stop logging
+Calls the logger's \code{$stop()} method if it exists, and removes
+the logger as attribute from \code{data}.
 }
