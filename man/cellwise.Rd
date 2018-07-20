@@ -11,11 +11,7 @@ cellwise
 \description{
 The cellwise logger registres the row, column, old, and new value
 of cells that changed, along with a step number, timestamp, and the
-expression used to alter a dataset. The log is initially written
-to a file connection. Upon dump, this file is closed, copied
-to a local file and reopened. The connection to the temporary 
-file is closed and destroyed when the logger is removed (using
-\code{\link{dump_log}(stop=TRUE)} or \code{\link{stop_log}()}.
+expression used to alter a dataset.
 }
 \section{Creating a logger}{
 
@@ -59,25 +55,26 @@ logfile <- tempfile(fileext=".csv")
 # convert height from inch to cm and log changes.
 # we need to set a unique key.
 women$sleutel <- 1:nrow(women)
-out <- women \%>>\%
-  start_log(log=cellwise$new(key="sleutel")) \%>>\%
-  {.$height <- .$height*2.54; .} \%>>\%
+out <- women \%L>\%
+  start_log(log=cellwise$new(key="sleutel")) \%L>\%
+  {.$height <- .$height*2.54; .} \%L>\%
   dump_log(file=logfile, stop=TRUE)
 
-read.csv(logfile) \%>>\% head()
+read.csv(logfile) \%L>\% head()
 
 # work with an externally defined logger.
 iris$id <- seq_len(nrow(iris))
 logger <- cellwise$new(key="id")
-iris \%>>\% 
-  start_log(logger) \%>>\%
-  head() \%>>\%
+iris \%L>\% 
+  start_log(logger) \%L>\%
+  head() \%L>\%
   stop_log()
 logger$logdata()
 
 
 }
 \seealso{
-Other loggers: \code{\link{filedump}}, \code{\link{simple}}
+Other loggers: \code{\link{expression_logger}},
+  \code{\link{filedump}}, \code{\link{simple}}
 }
 \keyword{datasets}

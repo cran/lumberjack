@@ -11,7 +11,7 @@ The pipe operator that logs
 \section{Overview}{
 
 
-The lumberjack \code{\%>>\%} behaves much like other function
+The lumberjack \code{\%L>\%} behaves much like other function
 composition ('pipe') operators available in R (e.g. \href{https://CRAN.R-project.org/package=magrittr}{magrittr}
 , \href{https://github.com/piccolbo/yapo}{yapo}, \href{https://CRAN.R-project.org/package=pipeR}{pipeR})
 with one exception: it allows for logging the changes made to the data

@@ -5,11 +5,7 @@
 #' 
 #' The cellwise logger registres the row, column, old, and new value
 #' of cells that changed, along with a step number, timestamp, and the
-#' expression used to alter a dataset. The log is initially written
-#' to a file connection. Upon dump, this file is closed, copied
-#' to a local file and reopened. The connection to the temporary 
-#' file is closed and destroyed when the logger is removed (using
-#' \code{\link{dump_log}(stop=TRUE)} or \code{\link{stop_log}()}.
+#' expression used to alter a dataset. 
 #' 
 #' @section Creating a logger:
 #' \code{cellwise$new(verbose=TRUE, file=tempfile()}
@@ -133,8 +129,10 @@ mpaste <- function(...) paste(...,sep=".@.")
 # send x to long format, values as character.
 keyframe <- function(x, key){
   col_x <- names(x)[names(x) != key]
-  kf <- expand.grid(key=x[,key],variable=col_x)
-  kf$value <- Reduce(cc, x[col_x])
+  # we need doube brackets, for tibbles.
+  kf <- expand.grid(key=x[[key]],variable=col_x)
+  # we need as.data.frame for certain tibbles (created with group_by)
+  kf$value <- Reduce(cc, as.data.frame(x[col_x]))
   isort(kf, c("key","variable"))
 }
 

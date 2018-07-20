@@ -18,15 +18,15 @@ trivial <- R6Class("trivial",
 
 ## ------------------------------------------------------------------------
 library(lumberjack)
-out <- women %>>% 
-  start_log(trivial$new()) %>>%
-  identity() %>>%
+out <- women %L>% 
+  start_log(trivial$new()) %L>%
+  identity() %L>%
   dump_log(stop=TRUE)
 
 
-out <- women %>>%
-  start_log(trivial$new()) %>>%
-  head() %>>%
+out <- women %L>%
+  start_log(trivial$new()) %L>%
+  head() %L>%
   dump_log(stop=TRUE)
 
 ## ------------------------------------------------------------------------
@@ -51,15 +51,15 @@ trivial <- setRefClass("trivial",
 
 ## ------------------------------------------------------------------------
 library(lumberjack)
-out <- women %>>% 
-  start_log(trivial()) %>>%
-  identity() %>>%
+out <- women %L>% 
+  start_log(trivial()) %L>%
+  identity() %L>%
   dump_log(stop=TRUE)
 
 
-out <- women %>>%
-  start_log(trivial()) %>>%
-  head() %>>%
+out <- women %L>%
+  start_log(trivial()) %L>%
+  head() %L>%
   dump_log(stop=TRUE)
 
 

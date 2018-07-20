@@ -42,10 +42,10 @@ output.
 \examples{
 
 logfile <- tempfile(fileext=".csv")
-out <- women \%>>\%
-  start_log(log=simple$new(verbose=FALSE)) \%>>\%
-  identity() \%>>\%
-  head() \%>>\% 
+out <- women \%L>\%
+  start_log(log=simple$new(verbose=FALSE)) \%L>\%
+  identity() \%L>\%
+  head() \%L>\% 
   dump_log(file=logfile, stop=TRUE)
 
 
@@ -54,6 +54,6 @@ read.csv(logfile,stringsAsFactors=FALSE)
 }
 \seealso{
 Other loggers: \code{\link{cellwise}},
-  \code{\link{filedump}}
+  \code{\link{expression_logger}}, \code{\link{filedump}}
 }
 \keyword{datasets}

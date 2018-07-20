@@ -43,10 +43,11 @@ in a directory of choice.
 \section{Details}{
 
 
-If \code{dir} does not exist it is created. If
+If \code{dir} does not exist it is created.
 }
 
 \seealso{
-Other loggers: \code{\link{cellwise}}, \code{\link{simple}}
+Other loggers: \code{\link{cellwise}},
+  \code{\link{expression_logger}}, \code{\link{simple}}
 }
 \keyword{datasets}

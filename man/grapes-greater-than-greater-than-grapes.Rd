@@ -21,11 +21,11 @@ A not-a-pipe operator that logs
 \section{Piping}{
 
 
-The operators \code{\%>>\%} and \code{\%L>\%} are synonyms. The \code{\%L>\%}
-can be used to avoid confusion with the \code{\%>>\%} operator of the
-\code{pipeR} package.
+The operators \code{\%L>\%} and \code{\%>>\%} are synonyms. The \code{\%L>\%}
+is the default since version 0.3.0 to avoid confusion with the \code{\%>>\%}
+operator of the \code{pipeR} package but \code{\%>>\%} still works.
 
-The lumberjack operator behaves more or less as a simplified version of the 
+The lumberjack operator behaves as a simplified version of the
 \code{magrittr} pipe operator. The basic behavior of \code{lhs \%>>\% rhs} is
 the following:
 
@@ -42,6 +42,7 @@ The most notable differences with `magrittr` are the following.
   like \code{a <- . \%>\% sin(.) } 
   }
   \item{there is no assignment-pipe like \code{\%<>\%}.}
+  \item{you cannot do things like \code{x \%>\% sin} (without the brackets).}
 }
 }
 
@@ -58,16 +59,16 @@ lumberjack}).
 
 \examples{
 # pass arguments to a function
-1:3 \%>>\% mean()
+1:3 \%L>\% mean()
 
 # pass arguments using "."
-TRUE \%>>\% mean(c(1,NA,3), na.rm = .)
+TRUE \%L>\% mean(c(1,NA,3), na.rm = .)
 
 # pass arguments to an expression, using "."
-1:3 \%>>\% { 3 * .}
+1:3 \%L>\% { 3 * .}
 
 # in a more complicated expression, return "." explicitly
-women \%>>\% { .$height <- 2*.$height; . }
+women \%L>\% { .$height <- 2*.$height; . }
 
 
 
