@@ -1,12 +1,10 @@
 # Implementation of the simple logger.
 
 
-#' The simple logger.
+#' The simple logger
 #' 
-#' The simple logger registers the expression
-#' applied to an object; a \code{POSIXct} timestamp and
-#' a logical indicating whether the input is identical to the
-#' output.
+#' Record for each expression a \code{POSIXct} timestamp and a logical
+#' indicating whether the tracked object has changed.
 #' 
 #' @section Creating a logger:
 #' 
@@ -17,15 +15,21 @@
 #' 
 #' @section Dump options: 
 #' 
-#' \code{$dump(file="simple_log.csv",...)}
+#' \code{$dump(file=NULL,...)}
 #' \tabular{ll}{
 #' \code{file}\tab filename or \code{\link[base]{connection}} to write output to.\cr
 #' \code{...}\tab extra options passed to \code{\link[utils]{write.csv}}, except
 #' \code{row.names}, which is set to \code{FALSE}.\cr
 #' }
 #' 
+#' The default location is \code{"simple.csv"} in an interactive session, and
+#' \code{"DATA_simple.csv"} in a script that executed via \code{\link{run_file}}.
+#' Here, \code{DATA} is the variable name of the data being tracked 
+#' or the \code{label} provided with \code{\link{start_log}}.
+#'
+#'
 #' @section Get data:
-#' \code{$logdata()} Returns a \code{data.frame}.
+#' \code{$logdata()} Returns a data frame with the current log.
 #' 
 #' 
 #' @docType class
@@ -40,6 +44,7 @@ simple <- R6Class("simple"
     n = NULL
     , store = NULL
     , verbose = NULL
+    , label = NULL
     , initialize = function( verbose = TRUE){
       self$n <- 0
       self$store <- new.env()
@@ -55,8 +60,12 @@ simple <- R6Class("simple"
       self$store[[logname]] <- logdat
       
     }
-    , dump = function(file="simple_log.csv",...){
+    , dump = function(file=NULL,...){
         log_df <- do.call(rbind,mget(ls(self$store), self$store))
+        if (is.null(file)){ 
+          file <- "simple.csv"
+          if (!is.null(self$label) && self$label != "" ) file <- paste(self$label,file,sep="_")
+        }
         write.csv(log_df, file=file, row.names = FALSE,...)
         if (is.character(file) && self$verbose ){
           msgf("Dumped a log at %s", normalizePath(file))

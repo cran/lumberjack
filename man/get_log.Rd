@@ -4,10 +4,13 @@
 \alias{get_log}
 \title{Get log object from a data item}
 \usage{
-get_log(data)
+get_log(data, logger = NULL)
 }
 \arguments{
-\item{data}{An R object carrying data.}
+\item{data}{An R object.}
+
+\item{logger}{\code{[character]} scalar. Logger to return. Can be
+\code{NULL} when a single logger is attached.}
 }
 \value{
 A logging object, or \code{NULL} if none exists.
@@ -15,3 +18,9 @@ A logging object, or \code{NULL} if none exists.
 \description{
 Get log object from a data item
 }
+\seealso{
+Other control: \code{\link{\%>>\%}},
+  \code{\link{dump_log}}, \code{\link{run_file}},
+  \code{\link{start_log}}, \code{\link{stop_log}}
+}
+\concept{control}

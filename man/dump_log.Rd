@@ -2,20 +2,42 @@
 % Please edit documentation in R/lumberjack.R
 \name{dump_log}
 \alias{dump_log}
-\title{Dump a log}
+\title{Dump logging data}
 \usage{
-dump_log(data, stop = TRUE, ...)
+dump_log(data, logger = NULL, stop = TRUE, ...)
 }
 \arguments{
-\item{data}{data set containing a log}
+\item{data}{An R object tracked by one or more loggers.}
 
-\item{stop}{stop logging after the dump?}
+\item{logger}{\code{[character]} vector. Class names of loggers to dump (e.g.
+\code{"simple"}).  When \code{loggers=NULL}, all loggers are dumped
+for this object.}
 
-\item{...}{Arguments past to the \code{dump} method of the logger.}
+\item{stop}{\code{[logical]} stop logging after the dump? Removes the
+logger(s) tracking the object.}
+
+\item{...}{Arguments passed to the \code{dump} method of the logger.}
 }
 \value{
-The data, invisibly
+\code{data}, invisibly.
 }
 \description{
-Dump a log
+Calls the \code{$dump(...)} method of logger(s) tracking an R object.
 }
+\examples{
+logfile <- tempfile(fileext=".csv")
+women \%L>\%
+  start_log(logger=simple$new()) \%L>\%
+  transform(height_cm = height*2.52) \%L>\%
+  dump_log(file=logfile)
+logdata <- read.csv(logfile)
+head(logdata)
+
+
+}
+\seealso{
+Other control: \code{\link{\%>>\%}}, \code{\link{get_log}},
+  \code{\link{run_file}}, \code{\link{start_log}},
+  \code{\link{stop_log}}
+}
+\concept{control}

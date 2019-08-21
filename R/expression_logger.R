@@ -4,24 +4,32 @@
 
 #' The expression logger.
 #' 
-#' The expression logger records the result of one or more user-defined
-#' expressions. It can be used, for example to track aggregates (mean, min, max)
-#' of variables as they get processed in the data pipeline.
+#' Records the result of one or more user-defined expressions that perform
+#' calculations on the object being tracked.
 #' 
-#' 
-#' @section Creating a logger:
-#' \code{expression_logger$new(..., file="expression_log.csv")}
+#' @section Creating a logger: 
+#' \code{expression_logger$new(..., verbose=TRUE)}
 #' \tabular{ll}{
-#' \code{...}\tab comma-separated \code{name = expression} pairs\cr
-#' \code{file}\tab [character] filename for temporaty log storage. \cr
+#' \code{...}\tab A comma-separated list of \code{name = expression} pairs. \cr
+#' \code{verbose}\tab \code{[logical]} toggle verbosity.
 #' }
-#' 
-#' 
+#'
+#' Each expression will be evaluated in the context of the object tracked with
+#' this logger. An expression is expected to have a single \code{numeric} or
+#' \code{character} output.
+#'
+#'
 #' @section Dump options:
-#' \code{$dump()}
+#'
+#' \code{$dump(file=NULL)}
 #' \tabular{ll}{
-#'   \code{}\tab Currently no options are implemented.
+#'   \code{file}\tab \code{[character]} location to write final output to.\cr
 #' }
+#' The default location is \code{"expression.csv"} in an interactive session, and
+#' \code{"DATA_expression.csv"} in a script that executed via \code{\link{run_file}}.
+#' Here, \code{DATA} is the variable name of the data being tracked
+#' or the \code{label} provided with \code{\link{start_log}}.
+#' 
 #' 
 #' 
 #' @docType class
@@ -38,11 +46,12 @@ expression_logger <- R6Class("expression_loggger"
     , expr = NULL
     , expression = NULL
     , result = NULL
-    , file=NULL
-    , initialize = function(..., file="expression_log.csv"){
-        self$step       = c()
-        self$expression = c()
-        self$file       = file
+    , verbose=TRUE
+    , label=NULL
+    , initialize = function(..., verbose=TRUE){
+        self$step       <- c()
+        self$expression <- c()
+        self$verbose    <- verbose
         self$expr <- as.list(substitute(list(...))[-1])
     }
     , add = function(meta, input, output){
@@ -57,14 +66,18 @@ expression_logger <- R6Class("expression_loggger"
           self$result <- rbind(self$result, out)
         }
     }
-    , dump = function(...){
-      write.csv(cbind(
-            step=self$step
-          , expression= self$expression
-          , self$result, stringsAsFactors = FALSE)
-        , file=self$file
-        , row.names=FALSE)
-      lumberjack:::msgf("Dumped a log at %s",self$file)
+    , dump = function(file=NULL,...){
+        if (is.null(file)){
+          file <- "expression.csv"
+          if (!is.null(self$label) && self$label != "") file <- paste(self$label, file, sep="_")
+        }
+        d <- cbind(
+              step       = self$step
+            , expression = self$expression
+            , self$result
+            , stringsAsFactors = FALSE)
+        write.csv(d, file=file , row.names=FALSE)
+        if( self$verbose ) lumberjack:::msgf("Dumped a log at %s", file)
     }
   )
 )

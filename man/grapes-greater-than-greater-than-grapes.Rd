@@ -16,7 +16,7 @@ lhs \%L>\% rhs
 as value}
 }
 \description{
-A not-a-pipe operator that logs
+The not-a-pipe operator that tracks changes in data.
 }
 \section{Piping}{
 
@@ -53,8 +53,7 @@ If the left-hand-side is tagged for logging, the lumberjack will update the
 log by calling the logger's \code{$add()} method, with arguments \code{meta},
 \code{input}, \code{output}. Here, \code{meta} is a list with information on
 the operations performed, and input and output are the left-hand-side and the
-result, respectively (See also: \href{../doc/extending.html}{extending
-lumberjack}).
+result, respectively.
 }
 
 \examples{
@@ -73,3 +72,9 @@ women \%L>\% { .$height <- 2*.$height; . }
 
 
 }
+\seealso{
+Other control: \code{\link{dump_log}},
+  \code{\link{get_log}}, \code{\link{run_file}},
+  \code{\link{start_log}}, \code{\link{stop_log}}
+}
+\concept{control}

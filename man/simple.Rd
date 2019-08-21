@@ -3,16 +3,14 @@
 \docType{class}
 \name{simple}
 \alias{simple}
-\title{The simple logger.}
+\title{The simple logger}
 \format{An \code{R6} class object.}
 \usage{
 simple
 }
 \description{
-The simple logger registers the expression
-applied to an object; a \code{POSIXct} timestamp and
-a logical indicating whether the input is identical to the
-output.
+Record for each expression a \code{POSIXct} timestamp and a logical
+indicating whether the tracked object has changed.
 }
 \section{Creating a logger}{
 
@@ -26,17 +24,22 @@ output.
 \section{Dump options}{
  
 
-\code{$dump(file="simple_log.csv",...)}
+\code{$dump(file=NULL,...)}
 \tabular{ll}{
 \code{file}\tab filename or \code{\link[base]{connection}} to write output to.\cr
 \code{...}\tab extra options passed to \code{\link[utils]{write.csv}}, except
 \code{row.names}, which is set to \code{FALSE}.\cr
 }
+
+The default location is \code{"simple.csv"} in an interactive session, and
+\code{"DATA_simple.csv"} in a script that executed via \code{\link{run_file}}.
+Here, \code{DATA} is the variable name of the data being tracked 
+or the \code{label} provided with \code{\link{start_log}}.
 }
 
 \section{Get data}{
 
-\code{$logdata()} Returns a \code{data.frame}.
+\code{$logdata()} Returns a data frame with the current log.
 }
 
 \examples{
@@ -56,4 +59,5 @@ read.csv(logfile,stringsAsFactors=FALSE)
 Other loggers: \code{\link{cellwise}},
   \code{\link{expression_logger}}, \code{\link{filedump}}
 }
+\concept{loggers}
 \keyword{datasets}

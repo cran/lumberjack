@@ -4,27 +4,14 @@
 \name{lumberjack}
 \alias{lumberjack}
 \alias{lumberjack-package}
-\title{The pipe operator that logs}
+\title{Track changes in data}
 \description{
-The pipe operator that logs
+This package allows you to track changes in R objects by defining one or
+more loggers for each object. There are a number of built-in loggers and
+users (or package authors) can create their own loggers.  To get started
+please have a look at the \href{../doc/using_lumbjerjack.pdf}{using
+lumberjack} vignette.
 }
-\section{Overview}{
-
-
-The lumberjack \code{\%L>\%} behaves much like other function
-composition ('pipe') operators available in R (e.g. \href{https://CRAN.R-project.org/package=magrittr}{magrittr}
-, \href{https://github.com/piccolbo/yapo}{yapo}, \href{https://CRAN.R-project.org/package=pipeR}{pipeR})
-with one exception: it allows for logging the changes made to the data
-by the functions acting on it.
-
-The actual logging mechanism is completely flexible and extensible. This
-package comes with a few predefined loggers, but users and package authors
-can write their own logger that follows the lumberjack API.
-
-See the \href{../doc/intro.html}{Introductory vignette} to start logging
-or the \href{../doc/extending.html}{extending lumberjack} manual to start 
-writing your own loggers.
-
-Happy logging!
+\author{
+Mark van der Loo
 }
-

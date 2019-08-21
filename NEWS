@@ -1,3 +1,17 @@
+version 1.0.1
+- fixed error caught on CRAN (an example wrote locally)
+
+version 1.0.0
+- Start tracking changes in R objects, by adding a single line of code to
+  an existing script.
+- New function 'run_file', track changes in scripts without '%L>%'
+- Support for multiple loggers; loggers can now support an (automatic) label
+  which is used to distinguish output files when multiple datasets are tracked.
+- Argument 'log' is replaced by 'logger' in start_log(), dump_log() et al.
+- Completely new vignette. Removed dependence on knitr.
+- Completely reviewed the reference manual.
+- Switched to 'tinytest' testing framework.
+
 version 0.3.0
 - '%L>%' is now considered the default lumberjack operator. '%>>%' remains as alias.
 - Added 'expression_logger': log custom expressions

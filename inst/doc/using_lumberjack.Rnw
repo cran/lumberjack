@@ -1,0 +1,571 @@
+%\VignetteIndexEntry{Using lumberjack}
+\documentclass[11pt]{article}
+\usepackage{enumitem}
+\usepackage{xcolor}  % for color definitions
+\usepackage{sectsty} % to modify heading colors
+\usepackage{fancyhdr}
+\setlist{nosep}
+
+% simpler, but issue with your margin notes
+\usepackage[left=1cm,right=3cm, bottom=2cm, top=1cm]{geometry}
+
+\usepackage{hyperref}
+
+\definecolor{bluetext}{RGB}{0,101,165}
+\definecolor{graytext}{RGB}{80,80,80}
+
+\hypersetup{
+  pdfborder={0 0 0}
+ , colorlinks=true 
+ , urlcolor=blue
+ , linkcolor=bluetext
+ , linktoc=all
+ , citecolor=blue
+}
+
+\sectionfont{\color{bluetext}}
+\subsectionfont{\color{bluetext}}
+\subsubsectionfont{\color{bluetext}}
+
+% no serif=better reading from screen.
+\renewcommand{\familydefault}{\sfdefault}
+
+% header and footers
+\pagestyle{fancy}
+\fancyhf{}                          % empty header and footer
+\renewcommand{\headrulewidth}{0pt}  % remove line on top
+\rfoot{\color{bluetext} lumberjack \Sexpr{packageVersion("lumberjack")}}
+\lfoot{\color{black}\thepage}  % side-effect of \color{}: lowers the printed text a little(?)
+
+\usepackage{fancyvrb}
+
+
+% custom commands make life easier.
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\pkg}[1]{\textbf{#1}}
+\let\oldmarginpar\marginpar
+\renewcommand{\marginpar}[1]{\oldmarginpar{\color{bluetext}\raggedleft\scriptsize #1}}
+
+% skip line at start of new paragraph
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1ex}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Using \code{lumberjack}}
+\author{Mark van der Loo}
+\date{\today{} | Package version \Sexpr{packageVersion("lumberjack")}}
+
+\begin{document}
+\DefineVerbatimEnvironment{Sinput}{Verbatim}{fontshape=n,formatcom=\color{graytext}}
+\DefineVerbatimEnvironment{Soutput}{Verbatim}{fontshape=sl,formatcom=\color{graytext}}
+\newlength{\fancyvrbtopsep}
+\newlength{\fancyvrbpartopsep}
+\makeatletter
+\FV@AddToHook{\FV@ListParameterHook}{\topsep=\fancyvrbtopsep\partopsep=\fancyvrbpartopsep}
+\makeatother
+
+
+\setlength{\fancyvrbtopsep}{0pt}
+\setlength{\fancyvrbpartopsep}{0pt}
+\maketitle{}
+\thispagestyle{empty}
+
+\tableofcontents{}
+<<echo=FALSE>>=
+options(prompt="  ",
+        continue = "  ",
+        width=100)
+library(lumberjack)
+@
+
+\newpage{}
+\section{Purpose of this package: tracking changes in data}
+This package allows one to monitor changes in data as they get processed, with
+very little effort. It offers a clear and sharp separation of concerns between
+the primary goal of a data processing script, and a secondary goal: namely
+gathering data about the data process itself. The following diagram
+demonstrates the idea.  
+%
+\begin{center}
+\includegraphics[width=8cm]{datastep2.pdf}
+\end{center}
+%
+A programmer writes a script that transforms \code{data} into \code{data'},
+possibly based on externally provided parameters. The \pkg{lumberjack} package
+automatically gathers information on how a each process step changed the data.
+The way the difference between two versions of a data set is computed
+($\Delta$, in the diagram) is fully customizable. 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Tracking changes in scripts that process data}
+Consider as an example the following simple data analysis script in a file
+called \code{process.R}.
+\begin{Sinput}
+  data(women) 
+  women$height <- women$height * 0.0254
+  women$weight <- women$weight * 0.453592
+  women$bmi <- women$weight/(women$height^2)
+  outfile <- tempfile(fileext=".csv")
+  write.csv(women, file=outfile, row.names=FALSE)
+\end{Sinput}
+
+This script loads the \code{women} dataset, converts height and weight to SI
+units (meters and kg), and adds a Body-Mass Index column.  We can run the code
+in this file using \code{source} and read the result from the temporary file in
+\code{outfile}.
+
+To check what happens with the \code{women} dataset at each step we need to do
+two things. First, we define which dataset must me tracked, in what way, and
+for what part of the script. This can be done by adding one line of code.
+\begin{Sinput}
+  data(women) 
+
+  start_log(women, logger=simple$new())
+
+  women$height <- women$height * 0.0254
+  women$weight <- women$weight * 0.453592
+  women$bmi <- women$weight/(women$height^2)
+  outfile <- tempfile(fileext=".csv")
+  write.csv(women, file=outfile, row.names=FALSE)
+
+\end{Sinput}
+Second, we run our script using \code{lumberjack::run\_file}.
+<<>>=
+library(lumberjack)
+out <- run_file("process.R")
+@
+All variables created during \code{run\_file} are stored in \code{out}.
+<<>>=
+head(out$women, 3)
+@
+The logging information is by default written to a file with a name that is the
+combination of the data set name and the logger name, here:
+\code{women\_simple.csv} (but this can be customized, see \code{?simple}).
+<<>>=
+read.csv("women_simple.csv")
+@
+The \code{simple} logger records for each expression in the script whether it
+changed the data that is being tracked. An overview of available loggers is
+given in Section~\ref{sect:loggers}.
+
+
+Summarizing, to track chages in a data set one needs to do the following.
+\begin{enumerate}
+  \item Define a \emph{logger}. Here this is done with \code{simple\$new()}.
+  \item Tell \pkg{lumberjack} which dataset(s) to log. Here, this is done with
+  \code{start\_log(dataset, logger)}. When tracking multiple datasets, each
+  dataset must get its own logger (see Section~\ref{sect:multiple}).
+  \item Develop the analyses as usual.
+  \item \emph{Optionally} dump the logging information and close the logger explicitly
+   (see Section~\ref{sect:datalocation}).
+  \item Run the whole file using \code{lumberjack::run\_file}.
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{A little background}
+We give a rough sketch on how \pkg{lumberjack} works. Two concepts govern its
+behavior. The first concept is the \emph{logger}. A logger is an R object that
+capable of comparing two datasets. Depending on the type of logger it can
+compare various things. The built-in \code{simple} logger just records whether
+two versions of a dataset are identical or not. The \code{cellwise} logger
+compares two versions of a data set cell-by-cell and records the old and new
+values if they differ. The \code{expression\_logger} tracks the value of an R
+expression as the data gets processed. A logger also offers functionality
+to dump logging information to file or elsewhere.
+
+The second concept is the \emph{runtime}. \pkg{lumberjack} intercepts the R
+expressions written by the user and calls the logger to compare the current
+version of a data set with the previous version. The runtime also takes care of
+keeping an old version of the data in memory for comparison. When the user
+calls \code{dump\_log()} it makes sure that the `dump' functionality of the
+active logger(s) is called.
+
+We have already seen the \code{run\_file()} implementation of the \pkg{lumberjack} 
+runtime. There is a second implementation for interactive use. This is
+the so-called lumberjack `pipe' operator \code{\%L>\%}, which is discussed
+in Section~\ref{sect:lumberjack}.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Controlling where the logging data is written}
+\label{sect:datalocation}
+The location of output is determined by the logger when \code{dump\_log} is
+called. This is done by default by \code{run\_file} after executing the script.  All
+loggers in \pkg{lumberjack} write output to a \code{csv} file with default
+location \code{dataset\_logger.csv}. If \code{run\_file} is used to to execute an R
+file, then the log is written in the same directory as where the R file
+resides. You can control where and when logging information is dumped by
+calling \code{dump\_log} explicitly.
+
+For the \pkg{lumberjack} loggers, \code{dump\_log} has an argument \code{file}
+to control explicitly where logging data is saved. For example, to dump logging
+information for \code{mtcars} in \code{hihi.csv} one can do the following.
+<<eval=FALSE>>=
+start_log(mtcars, logger=simple$new())
+# all data transformations here...
+dump_log(file="hihi.csv")
+@
+
+Note that we took care to state `loggers in \pkg{lumberjack}' every time.  This
+is because \pkg{lumberjack} is extensible and other loggers can be developed
+that output logs to a data base for example. In fact, the parameters that
+\code{dump\_log()} accepts, apart from \code{data}, \code{logger} and
+\code{stop}, can be different for each logger in principle.  For a
+specification of arguments and values, see the help pages for each logger.
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Tracking multiple datasets}
+\label{sect:multiple}
+Call \code{start\_log}, with a new logger on each dataset to track. For
+example to track both \code{women} and \code{mtcars} with the \code{simple}
+logger, do the following.
+<<eval=FALSE>>=
+start_log(women, logger=simple$new())
+start_log(mtcars, logger=simple$new())
+# all data transformations here...
+dump_log()
+@
+%
+Calling \code{dump\_log()} will cause all loggers to stop tracking changes and
+write changes to file. To dump all loggers for a specific dataset, provide
+the dataset when dumping.
+<<eval=FALSE>>=
+dump_log(data=mtcars)
+@
+It is also possible to use multiple loggers on a single dataset. To is is done
+by calling \code{start\_log} multiple times for the same data set, with
+different loggers. Here we track the women dataset with the \code{simple}
+logger and with the \code{cellwise} logger.
+<<eval=FALSE>>=
+women$id <- 1:15
+start_log(women, logger=simple$new())
+start_log(women, logger=cellwise(key="id"))
+# all data transformations here...
+dump_log()
+@
+Here, the \code{cellwise} logger records every change in every cell as the data
+gets processed. It needs a key column to be able to identify and store the
+location of each cell for each record. To dump a specific logger for a specific
+dataset, pass the data and the name of the logger.
+<<eval=FALSE>>=
+dump_log(women, "cellwise")
+@
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Tracking changes in data in interactive sessions}
+\label{sect:lumberjack}
+The \pkg{lumberjack} operator is a forward `pipe' operator that enables
+logging. In this example we compute again the BMI index of records in the
+\code{women} dataset that comes with R. We use the \code{transform} function
+from base R to derive the new columns.
+<<>>=
+data(women)
+women$id <- 1:15
+out <- women %L>%
+  start_log(logger = cellwise$new(key="id")) %L>%
+  transform(height = height*0.0254  ) %L>%
+  transform(weight = weight*0.453592) %L>%
+  transform(bmi    = weight/height^2) %L>%
+  dump_log()
+head( read.csv("cellwise.csv"), 3)
+@
+The logging data consists of a step number, a timestamp, the expression that
+transformed the data, the record key, the variable, the old and the new value.
+
+
+The variable \code{out} contains the output of the calculation.
+<<>>=
+head(out,3)
+@
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Available loggers}
+\label{sect:loggers}
+
+\pkg{lumberjack} is extensible and users can provide their own loggers,
+for example to offload logging results to a data base or to define
+new ways to measure the difference between two data sets. Below
+we list loggers that we know of.
+
+\subsection{In the lumberjack package}
+
+\begin{itemize}
+\item \code{simple} Just check whether data has changed.
+\item \code{cellwise} Track changes per cell (incl. old value, new value)
+\item \code{filedump} Dump a file after each step (including the zeroth step.)
+\item \code{expression\_logger} Track the result of any expression.
+\end{itemize}
+
+Both \code{cellwise} and \code{simple} have been discussed before.  The
+expression logger tracks the result of one or more expressions that will be
+evaluated after each data processing step. For example, suppose we want to
+follow the mean and variance of variables in the `women` dataset as it gets
+processed.
+<<>>=
+logger <- expression_logger$new(mean_h = mean(height), sd_h = sd(height))
+out <- women %L>%
+  start_log(logger) %L>%
+  transform(height = height*2.54) %L>% 
+  transform(weight = weight*0.453592) %L>%
+  dump_log()
+read.csv("expression.csv",stringsAsFactors = FALSE)
+@
+
+
+\subsection{In other packages}
+
+\begin{itemize}
+\item \code{\href{https://CRAN.R-project.org/package=validate}{validate}::lbj\_rules} Track changes in data quality measured by validation rules.
+\item \code{\href{https://CRAN.R-project.org/package=validate}{validate}::lbj\_cells} Track changes in cell filling and cell counts.
+\item \code{\href{https://CRAN.R-project.org/package=daff}{daff}::lbj\_daff} Use data-diff to track changes in data frame-like objects.
+\end{itemize}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Properties of the lumberjack pipe operator}
+
+There are several  `forward pipe' operators in the R community, including
+\href{https://cran.r-project.org/package=magrittr}{magrittr},
+\href{https://cran.r-project.org/package=pipeR}{pipeR} and
+\href{https://github.com/piccolbo/yapo}{yapo}. All have different behavior. 
+The  lumberjack operator behaves as a simplified version of the `magrittr` pipe
+operator. Here are some examples.
+<<>>=
+# pass the first argument to a function
+1:3 %L>% mean()
+
+# pass arguments using "."
+TRUE %L>% mean(c(1,NA,3), na.rm = .)
+
+# pass arguments to an expression, using "."
+1:3 %L>% { 3 * .}
+
+# in a more complicated expression, return "." explicitly
+women %L>% { .$height <- 2*.$height; . } %L>% head(3)
+@
+
+The main differences with `magrittr` are that 
+\begin{itemize}
+\item there is no assignment-pipe like \code{\%<>\%}.
+\item it does not allow you to define functions in the magrittr style: \code{a <- . \%>\% sin(.)}
+\item you cannot do things like \code{pi \%>\% sin} and expect an answer.
+\end{itemize}
+
+\section{Extending lumberjack}
+There are many ways to register changes in data.  That is why
+\pkg{lumberjack} is extensible with new loggers. 
+
+\subsection{The lumberjack logging API}
+
+In short, a logger is a \emph{reference object} with the following \emph{mandatory} elements:
+
+\begin{enumerate}
+  \item A method \code{\$add(meta, input, output)}. This is a function that
+  computes the difference between \code{input} and \code{output} and adds it to a
+  log. The \code{meta} argument is a \code{list} with two elements:
+  \begin{itemize}
+    \item \code{expr} The expression used to turn \code{input} into \code{output}.
+    \item \code{src} The same expression, but turned into a string.
+  \end{itemize}
+  \item A method \code{\$dump(...)} this function writes the current logging info
+  somewhere. Often this will be a file, but it really can be any place where R
+  can send data. It is \emph{recommended} that \code{dump} has the argument
+  \code{file} if it writes anything to file. \code{\$dump} \emph{must} have the
+  \code{...} argument because when a user calls \code{dump\_log(...)} the extra
+  arguments are passed to \code{\$dump}.
+  \item a slot called \code{\$label}. The label is set by \code{start\_log} and
+  is used to keep track of logging streams when multiple datasets are tracked
+  with instances of the same logger type. \code{start\_log} will try to create a
+  label if none is provided. If it fails to create a label, it will be set to the
+  empty string `""`.
+\end{enumerate}
+The following element is \emph{optional}
+\begin{enumerate}
+\item A method \code{\$stop()} called by \code{stop\_log()} before removing the
+logger from the data.
+\end{enumerate}
+
+
+There are several systems in R to build such a reference object. We recommend
+using \href{https://cran.r-project.org/package=R6}{R6} classes or
+\href{http://adv-r.had.co.nz/R5.html}{reference classes}.  Below an example for
+each system is given. The example loggers only register whether something has
+ever changed. A \code{dump} results in a simple message on screen.
+
+\subsection{R6 classes}
+An introduction to R6 classes can be found
+\href{https://cran.r-project.org/package=R6/vignettes/Introduction.html}{here}.
+
+Let us define the `trivial' logger.
+<<>>=
+library(R6)
+trivial <- R6Class("trivial",
+  public = list(
+    changed = NULL
+  , label=NULL
+  , initialize = function(){
+      self$changed <- FALSE
+  }
+  , add = function(meta, input, output){
+    self$changed <- self$changed | !identical(input, output)
+  }
+  , dump = function(){
+    msg <- if(self$changed) "" else "not "
+    cat(sprintf("The data has %schanged\n",msg))
+  }
+  )
+)
+@
+Here is how to use it.
+<<>>=
+library(lumberjack)
+out <- women %L>% 
+  start_log(trivial$new()) %L>%
+  identity() %L>%
+  dump_log(stop=TRUE)
+
+
+out <- women %L>%
+  start_log(trivial$new()) %L>%
+  head() %L>%
+  dump_log(stop=TRUE)
+@
+
+\subsection{Reference classes}
+Reference classes (RC) come with the R recommended `methods` package.  An
+introduction can be found \href{http://adv-r.had.co.nz/R5.html}{here}. Here is
+how to define the trivial logger as a reference class.
+<<>>=
+library(methods)
+trivial <- setRefClass("trivial",
+  fields = list(
+    changed = "logical", label="character"
+  ),
+  methods = list(
+    initialize = function(){
+      .self$changed = FALSE
+      .self$label = ""
+    }
+    , add = function(meta, input, output){
+      .self$changed <- .self$changed | !identical(input,output)
+    }
+    , dump = function(){
+      msg <- if( .self$changed ) "" else "not "
+      cat(sprintf("The data has %schanged\n",msg))
+    }
+  )
+)
+@
+And here is how to use it.
+<<>>=
+library(lumberjack)
+out <- women %L>% 
+  start_log(trivial()) %L>%
+  identity() %L>%
+  dump_log(stop=TRUE)
+
+
+out <- women %L>%
+  start_log(trivial()) %L>%
+  head() %L>%
+  dump_log(stop=TRUE)
+
+@
+
+Observe that there are subtle differences between R6 and Reference classes (RC).
+\begin{itemize}
+\item In R6 the object is referred to with `self`, in RC this is done with `.self`.
+\item An R6 object is initialized with \code{classname\$new()}, an RC object 
+is initialized with \code{classname()}. 
+\end{itemize}
+
+
+\subsection{Advice for package authors}
+
+If you have a package that has interesting functionality that can be offered
+also inside a logger, you might consider exporting a logger object that works
+with \pkg{lumberjack}. To keep things uniform, we give the following advice.
+
+\paragraph{Documenting logging objects.}
+Most package authors use
+\href{https://cran.r-project.org/package=roxygen2}{roxygen2} to generate
+documentation. Below is an example of how to document the class and its
+methods. To show how to document arguments, a new \code{allcaps} argument is
+added to the dump function.
+
+\begin{verbatim}
+#' The trivial logger.
+#' 
+#' The trivial logger only registers whether something has changed at all.
+#' A `dump` leads to an informative message on the console.
+#'
+#' @section Creating a logger:
+#' \code{trivial$new()}
+#' 
+#' @section Dump options:
+#' \code{$dump(allcaps)}
+#' \tabular{ll}{
+#'   \code{allcaps}\tab \code{[logical]} print message in capitals?
+#' }
+#' 
+#' 
+#' @docType class
+#' @format An \code{R6} class object.
+#' 
+#' @examples
+#' out <- women %L>%
+#'  start_log(trivial$new()) %L>%
+#'  head() %L>%
+#'  dump_log(stop=TRUE)
+#' 
+#'
+#' @export
+trivial <- R6Class("trivial",
+  public = list(
+    changed = NULL
+  , initialize = function(){
+      self$changed <- FALSE
+  }
+  , add = function(meta, input, output){
+    self$changed <- self$changed | !identical(input, output)
+  }
+  , dump = function(allcaps=FALSE){
+    msg <- if(self$changed) "" else "not "
+    msg <- sprintf("The data has %schanged\n",msg)
+    if (allcaps) msg <- toupper(msg)
+    cat(msg)
+  )
+)
+\end{verbatim}
+
+
+\paragraph{Adding lumberjack to the DESCRIPTION of your package}
+
+Once you have exported a logger, it is a good idea to add the line
+\begin{verbatim}
+Enhances: lumberjack
+\end{verbatim}
+To the \code{DESCRIPTION} file. It can then be found by other users via lumberjack's
+CRAN webpage.
+
+
+
+
+\end{document}
