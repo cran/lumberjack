@@ -4,7 +4,7 @@
 \alias{stop_log}
 \title{Stop logging}
 \usage{
-stop_log(data, logger = NULL, ...)
+stop_log(data, logger = NULL, dump = TRUE, ...)
 }
 \arguments{
 \item{data}{An R object.}
@@ -13,7 +13,9 @@ stop_log(data, logger = NULL, ...)
 \code{"simple"}).  When \code{loggers=NULL}, all loggers are stopped and
 removed for this data.}
 
-\item{...}{Passed to the logger's \code{stop} method, if it exists.}
+\item{dump}{\code{['logical']} Toggle dump log file.}
+
+\item{...}{Passed to the logger's \code{dump} method, if it exists.}
 }
 \value{
 The data, invisibly.
@@ -33,8 +35,11 @@ head(logdata)
 
 }
 \seealso{
-Other control: \code{\link{\%>>\%}},
-  \code{\link{dump_log}}, \code{\link{get_log}},
-  \code{\link{run_file}}, \code{\link{start_log}}
+Other control: 
+\code{\link{\%>>\%}()},
+\code{\link{dump_log}()},
+\code{\link{get_log}()},
+\code{\link{run_file}()},
+\code{\link{start_log}()}
 }
 \concept{control}

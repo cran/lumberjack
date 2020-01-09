@@ -73,8 +73,11 @@ women \%L>\% { .$height <- 2*.$height; . }
 
 }
 \seealso{
-Other control: \code{\link{dump_log}},
-  \code{\link{get_log}}, \code{\link{run_file}},
-  \code{\link{start_log}}, \code{\link{stop_log}}
+Other control: 
+\code{\link{dump_log}()},
+\code{\link{get_log}()},
+\code{\link{run_file}()},
+\code{\link{start_log}()},
+\code{\link{stop_log}()}
 }
 \concept{control}

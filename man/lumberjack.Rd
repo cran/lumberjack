@@ -3,7 +3,6 @@
 \docType{package}
 \name{lumberjack}
 \alias{lumberjack}
-\alias{lumberjack-package}
 \title{Track changes in data}
 \description{
 This package allows you to track changes in R objects by defining one or

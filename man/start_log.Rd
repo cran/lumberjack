@@ -44,8 +44,11 @@ head(logdata)
 
 }
 \seealso{
-Other control: \code{\link{\%>>\%}},
-  \code{\link{dump_log}}, \code{\link{get_log}},
-  \code{\link{run_file}}, \code{\link{stop_log}}
+Other control: 
+\code{\link{\%>>\%}()},
+\code{\link{dump_log}()},
+\code{\link{get_log}()},
+\code{\link{run_file}()},
+\code{\link{stop_log}()}
 }
 \concept{control}

@@ -5,9 +5,6 @@
 \alias{expression_logger}
 \title{The expression logger.}
 \format{An \code{R6} class object.}
-\usage{
-expression_logger
-}
 \description{
 Records the result of one or more user-defined expressions that perform
 calculations on the object being tracked.
@@ -54,8 +51,9 @@ read.csv(logfile)
 
 }
 \seealso{
-Other loggers: \code{\link{cellwise}},
-  \code{\link{filedump}}, \code{\link{simple}}
+Other loggers: 
+\code{\link{cellwise}},
+\code{\link{filedump}},
+\code{\link{simple}}
 }
 \concept{loggers}
-\keyword{datasets}

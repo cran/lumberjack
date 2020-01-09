@@ -2,18 +2,24 @@
 % Please edit documentation in R/run.R
 \name{run_file}
 \alias{run_file}
+\alias{source_file}
 \title{Run a file while tracking changes in data}
 \usage{
-run_file(file, auto_dump = TRUE)
+run_file(file, auto_dump = TRUE, envir = NULL)
+
+source_file(file, auto_dump = TRUE)
 }
 \arguments{
 \item{file}{\code{[character]} file to run.}
 
 \item{auto_dump}{\code{[logical]} Toggle automatically dump all remaining logs
 after executing \code{file}.}
+
+\item{envir}{\code{[environment]} to run the code in. By default a new environment will be created
+with \code{.GlobalEnv} as parent.}
 }
 \value{
-An environment.
+The environment where the code was executed, invisibly.
 }
 \description{
 Run all code in a file. Changes in data that are tracked, (e.g.  with
@@ -21,8 +27,9 @@ Run all code in a file. Changes in data that are tracked, (e.g.  with
 }
 \section{Details}{
 
-All code in \code{file} is executed in a new environment with
-\code{.GlobalEnv} as a parent.
+\code{run\_file} runs code in a separate environment, and returns the environment with all
+the variables created by the code. \code{source\_file} acts like \code{\link{source}} and 
+runs all the code in the current global workspace (\code{.GlobalEnv}).
 }
 
 \examples{
@@ -46,8 +53,11 @@ read.csv("women_simple.csv")
 
 }
 \seealso{
-Other control: \code{\link{\%>>\%}},
-  \code{\link{dump_log}}, \code{\link{get_log}},
-  \code{\link{start_log}}, \code{\link{stop_log}}
+Other control: 
+\code{\link{\%>>\%}()},
+\code{\link{dump_log}()},
+\code{\link{get_log}()},
+\code{\link{start_log}()},
+\code{\link{stop_log}()}
 }
 \concept{control}

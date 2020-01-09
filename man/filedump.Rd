@@ -5,9 +5,6 @@
 \alias{filedump}
 \title{The file dumping logger.}
 \format{An \code{R6} class object.}
-\usage{
-filedump
-}
 \description{
 The file dumping logger dumps the most recent version of a dataset to csv in
 a directory of choice.
@@ -28,7 +25,7 @@ File locations are created with \code{file.path(dir, file)}, where
 interactive sessions \code{DATA=""}. In sessions where a script is executed
 using \code{\link{run_file}}, \code{DATA} is the name of the R object being
 tracked or the \code{label} provided with \code{\link{start_log}}.
-\code{STEP} a number that increases at each dump.
+\code{STEP} is a counter that increases at each dump.
 }
 
 \section{Dump options}{
@@ -66,8 +63,9 @@ dir(file.path(tempdir(),"filedump"))
 
 }
 \seealso{
-Other loggers: \code{\link{cellwise}},
-  \code{\link{expression_logger}}, \code{\link{simple}}
+Other loggers: 
+\code{\link{cellwise}},
+\code{\link{expression_logger}},
+\code{\link{simple}}
 }
 \concept{loggers}
-\keyword{datasets}

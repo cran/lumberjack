@@ -6,14 +6,14 @@
 \title{The cellwise logger.}
 \format{An \code{R6} class object.}
 \usage{
-cellwise(key, verbose=TRUE, file=tempfile())
+cellwise(key, verbose=TRUE, tempfile=file.path(tempdir(),"cellwise.csv"))
 }
 \arguments{
 \item{key}{\code{[character|integer]} index to column that uniquely identifies a row.}
 
 \item{verbose}{\code{[logical]} toggle verbosity.}
 
-\item{file}{\code{[character]} filename for temporaty log storage.}
+\item{tempfile}{\code{[character]} filename for temporaty log storage.}
 }
 \description{
 The cellwise logger registres the row, column, old, and new value
@@ -26,7 +26,7 @@ expression used to alter a dataset.
 \tabular{ll}{
   \code{key}\tab \code{[character|integer]} index to column that uniquely identifies a row.\cr
   \code{verbose}\tab \code{[logical]} toggle verbosity.\cr
-  \code{file}\tab [character] filename for temporaty log storage. \cr
+  \code{tempfile}\tab [character] filename for temporaty log storage. \cr
 }
 }
 
@@ -56,7 +56,7 @@ file. All logging info is appended to that connection. When
 \code{\link{dump_log}} is called, the temporary file is closed, copied to
 the output file, and reopened for writing. The connection is closed
 automatically when the logger is destroyed, for example when calling
-\code{\link{dump_log}()}.
+\code{\link{stop_log}()}.
 }
 
 \examples{
@@ -78,14 +78,15 @@ logger <- cellwise$new(key="id")
 iris \%L>\% 
   start_log(logger) \%L>\%
   head() \%L>\%
-  stop_log()
+  stop_log(dump=FALSE)
 logger$logdata()
 
 
 }
 \seealso{
-Other loggers: \code{\link{expression_logger}},
-  \code{\link{filedump}}, \code{\link{simple}}
+Other loggers: 
+\code{\link{expression_logger}},
+\code{\link{filedump}},
+\code{\link{simple}}
 }
 \concept{loggers}
-\keyword{datasets}

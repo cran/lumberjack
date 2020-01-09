@@ -19,8 +19,11 @@ A logging object, or \code{NULL} if none exists.
 Get log object from a data item
 }
 \seealso{
-Other control: \code{\link{\%>>\%}},
-  \code{\link{dump_log}}, \code{\link{run_file}},
-  \code{\link{start_log}}, \code{\link{stop_log}}
+Other control: 
+\code{\link{\%>>\%}()},
+\code{\link{dump_log}()},
+\code{\link{run_file}()},
+\code{\link{start_log}()},
+\code{\link{stop_log}()}
 }
 \concept{control}

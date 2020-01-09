@@ -5,9 +5,6 @@
 \alias{simple}
 \title{The simple logger}
 \format{An \code{R6} class object.}
-\usage{
-simple
-}
 \description{
 Record for each expression a \code{POSIXct} timestamp and a logical
 indicating whether the tracked object has changed.
@@ -56,8 +53,9 @@ read.csv(logfile,stringsAsFactors=FALSE)
 
 }
 \seealso{
-Other loggers: \code{\link{cellwise}},
-  \code{\link{expression_logger}}, \code{\link{filedump}}
+Other loggers: 
+\code{\link{cellwise}},
+\code{\link{expression_logger}},
+\code{\link{filedump}}
 }
 \concept{loggers}
-\keyword{datasets}

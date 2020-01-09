@@ -1,4 +1,5 @@
 ### R code from vignette source 'using_lumberjack.Rnw'
+### Encoding: UTF-8
 
 ###################################################
 ### code chunk number 1: using_lumberjack.Rnw:75-79

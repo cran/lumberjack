@@ -1,3 +1,14 @@
+version 1.1.2
+- the 'file' argument in 'cellwise$new' is now called 'tempfile' to better reflect
+  it's purpose.
+- cellwise logger now warns when it encounters a duplicate key (this will corrupt
+  logging info).
+- 'run_file' gains argument 'envir'.
+- new function 'source_file', with behaviour close to 'source'.
+- stop_log now has 'dump' argument (default: TRUE) and passes ellipsis to $dump() method.
+- Internal change: loggers now store internal data privately
+- Changed licence to EUPL 1.2
+
 version 1.0.3
 - fixed test that triggered a CRAN error because it wrote in the installed
   area (Thanks to Kurt Hornik).
