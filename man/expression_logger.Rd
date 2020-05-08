@@ -4,7 +4,9 @@
 \name{expression_logger}
 \alias{expression_logger}
 \title{The expression logger.}
-\format{An \code{R6} class object.}
+\format{
+An \code{R6} class object.
+}
 \description{
 Records the result of one or more user-defined expressions that perform
 calculations on the object being tracked.

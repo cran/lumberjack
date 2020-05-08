@@ -4,7 +4,9 @@
 \name{filedump}
 \alias{filedump}
 \title{The file dumping logger.}
-\format{An \code{R6} class object.}
+\format{
+An \code{R6} class object.
+}
 \description{
 The file dumping logger dumps the most recent version of a dataset to csv in
 a directory of choice.

@@ -3,8 +3,8 @@
 
 #' The cellwise logger.
 #' 
-#' The cellwise logger registres the row, column, old, and new value
-#' of cells that changed, along with a step number, timestamp, and the
+#' The cellwise logger registers the row, column, old, and new value of cells
+#' that changed, along with a step number, timestamp, source reference, and the
 #' expression used to alter a dataset. 
 #' 
 #' @section Creating a logger:
@@ -12,7 +12,7 @@
 #' \tabular{ll}{
 #'   \code{key}\tab \code{[character|integer]} index to column that uniquely identifies a row.\cr
 #'   \code{verbose}\tab \code{[logical]} toggle verbosity.\cr
-#'   \code{tempfile}\tab [character] filename for temporaty log storage. \cr
+#'   \code{tempfile}\tab [character] filename for temporary log storage. \cr
 #' }
 #' 
 #' @usage 
@@ -20,7 +20,7 @@
 #'
 #' @param key \code{[character|integer]} index to column that uniquely identifies a row.
 #' @param verbose  \code{[logical]} toggle verbosity.
-#' @param tempfile  \code{[character]} filename for temporaty log storage.
+#' @param tempfile  \code{[character]} filename for temporary log storage.
 #'
 #' @section Dump options:
 #'
@@ -74,6 +74,7 @@ cellwise <- R6Class("cellwise"
         data.frame(
           step=integer(0)
           , time=character(0)
+          , srcref=character(0)
           , expression=character(0)
           , key=character(0)
           , variable=character(0)
@@ -97,7 +98,9 @@ cellwise <- R6Class("cellwise"
       d$step <- private$n
       d$time <- ts
       d$expression <- meta$src
-      d <- d[c(5:7,1:4)]
+      d$srcref <- get_srcref(meta)
+      d <- d[c(5,6,8,7,1:4)]
+
       write.table(d,file = private$con
             , row.names=FALSE, col.names=FALSE, sep=",")
   }
@@ -146,7 +149,7 @@ mpaste <- function(...) paste(...,sep=".@.")
 # send x to long format, values as character.
 keyframe <- function(x, key){
   col_x <- names(x)[names(x) != key]
-  # we need doube brackets, for tibbles.
+  # we need double brackets, for tibbles.
   kf <- expand.grid(key=x[[key]],variable=col_x)
   # we need as.data.frame for certain tibbles (created with group_by)
   kf$value <- Reduce(cc, as.data.frame(x[col_x]))

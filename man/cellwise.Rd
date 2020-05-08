@@ -4,7 +4,9 @@
 \name{cellwise}
 \alias{cellwise}
 \title{The cellwise logger.}
-\format{An \code{R6} class object.}
+\format{
+An \code{R6} class object.
+}
 \usage{
 cellwise(key, verbose=TRUE, tempfile=file.path(tempdir(),"cellwise.csv"))
 }
@@ -13,11 +15,11 @@ cellwise(key, verbose=TRUE, tempfile=file.path(tempdir(),"cellwise.csv"))
 
 \item{verbose}{\code{[logical]} toggle verbosity.}
 
-\item{tempfile}{\code{[character]} filename for temporaty log storage.}
+\item{tempfile}{\code{[character]} filename for temporary log storage.}
 }
 \description{
-The cellwise logger registres the row, column, old, and new value
-of cells that changed, along with a step number, timestamp, and the
+The cellwise logger registers the row, column, old, and new value of cells
+that changed, along with a step number, timestamp, source reference, and the
 expression used to alter a dataset.
 }
 \section{Creating a logger}{
@@ -26,7 +28,7 @@ expression used to alter a dataset.
 \tabular{ll}{
   \code{key}\tab \code{[character|integer]} index to column that uniquely identifies a row.\cr
   \code{verbose}\tab \code{[logical]} toggle verbosity.\cr
-  \code{tempfile}\tab [character] filename for temporaty log storage. \cr
+  \code{tempfile}\tab [character] filename for temporary log storage. \cr
 }
 }
 

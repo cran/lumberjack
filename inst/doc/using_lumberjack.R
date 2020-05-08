@@ -1,5 +1,4 @@
 ### R code from vignette source 'using_lumberjack.Rnw'
-### Encoding: UTF-8
 
 ###################################################
 ### code chunk number 1: using_lumberjack.Rnw:75-79
@@ -83,13 +82,13 @@ head( read.csv("cellwise.csv"), 3)
 
 
 ###################################################
-### code chunk number 11: using_lumberjack.Rnw:289-290
+### code chunk number 11: using_lumberjack.Rnw:291-292
 ###################################################
 head(out,3)
 
 
 ###################################################
-### code chunk number 12: using_lumberjack.Rnw:318-325
+### code chunk number 12: using_lumberjack.Rnw:320-327
 ###################################################
 logger <- expression_logger$new(mean_h = mean(height), sd_h = sd(height))
 out <- women %L>%
@@ -101,7 +100,7 @@ read.csv("expression.csv",stringsAsFactors = FALSE)
 
 
 ###################################################
-### code chunk number 13: using_lumberjack.Rnw:350-361
+### code chunk number 13: using_lumberjack.Rnw:352-363
 ###################################################
 # pass the first argument to a function
 1:3 %L>% mean()
@@ -117,7 +116,7 @@ women %L>% { .$height <- 2*.$height; . } %L>% head(3)
 
 
 ###################################################
-### code chunk number 14: using_lumberjack.Rnw:417-434
+### code chunk number 14: using_lumberjack.Rnw:425-442
 ###################################################
 library(R6)
 trivial <- R6Class("trivial",
@@ -139,7 +138,7 @@ trivial <- R6Class("trivial",
 
 
 ###################################################
-### code chunk number 15: using_lumberjack.Rnw:437-448
+### code chunk number 15: using_lumberjack.Rnw:445-456
 ###################################################
 library(lumberjack)
 out <- women %L>% 
@@ -155,7 +154,7 @@ out <- women %L>%
 
 
 ###################################################
-### code chunk number 16: using_lumberjack.Rnw:455-474
+### code chunk number 16: using_lumberjack.Rnw:463-482
 ###################################################
 library(methods)
 trivial <- setRefClass("trivial",
@@ -179,7 +178,7 @@ trivial <- setRefClass("trivial",
 
 
 ###################################################
-### code chunk number 17: using_lumberjack.Rnw:477-489
+### code chunk number 17: using_lumberjack.Rnw:485-497
 ###################################################
 library(lumberjack)
 out <- women %L>% 

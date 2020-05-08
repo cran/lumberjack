@@ -23,7 +23,7 @@ All loggers that come with \pkg{lumberjack} support labeling. The label is
 used by \code{dump} methods to create a unique file name for each
 object/logger combination.
 
-If \code{label} is not supplied, \code{start_log} attemtps to create a label
+If \code{label} is not supplied, \code{start_log} attempts to create a label
 from the name of the \code{data} variable. This probably fails when
 \code{data} is not a variable but an expression (like \code{read.csv...}). A
 label is also not created when data is passed via the lumberjack not-a-pipe

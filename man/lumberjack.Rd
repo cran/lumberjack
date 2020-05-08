@@ -8,7 +8,7 @@
 This package allows you to track changes in R objects by defining one or
 more loggers for each object. There are a number of built-in loggers and
 users (or package authors) can create their own loggers.  To get started
-please have a look at the \href{../doc/using_lumbjerjack.pdf}{using
+please have a look at the \href{../doc/using_lumberjack.pdf}{using
 lumberjack} vignette.
 }
 \author{
