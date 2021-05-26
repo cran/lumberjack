@@ -1,4 +1,4 @@
-a5767d41631f41b61bd96dd35e3d37dc *DESCRIPTION
+a2a98b50cd3e1d391ea28c81eba2ad54 *DESCRIPTION
 a34d6e1321e0176475ee02a1e7f6e5e9 *NAMESPACE
 e78a34de71d26f9e44a118ae57b77484 *NEWS
 911144259aa4cdadd1f46a6a4726ed7d *R/cellwise.R
@@ -9,13 +9,13 @@ ad51355c7fb980983342482bd5ac216d *R/lumberjack.R
 04ca6eb2407a56c37c5130cbaa1b8188 *R/simple.R
 c3de46b3139c448427a0cb4e287d8a9c *R/utils.R
 71de5d76f79f25203d71cad3c0936863 *README.md
-b1c5b7aa79653b641ca187e4715f6776 *build/vignette.rds
-087b9cdcaab922750bac366ca25a0b46 *inst/CITATION
+b1158dcf5b54848bbea9e6d2d6629057 *build/vignette.rds
+afa9194372409ac2e285982d26b883f8 *inst/CITATION
 e8d2d35940750e25806a7c0ea88908f7 *inst/doc/JSS_4008.Rnw
-2e1391abc40981efadf74480e735c136 *inst/doc/JSS_4008.pdf
+b6a0978fdabb7fbed00b4dda09b96507 *inst/doc/JSS_4008.pdf
 6f3706b872a3e651e7edbe1e41074558 *inst/doc/using_lumberjack.R
 ee62f95871d38582cfb63dcdee18efa1 *inst/doc/using_lumberjack.Rnw
-577eb8efb57002b5ab4cbb175f59b8f2 *inst/doc/using_lumberjack.pdf
+69262bb3827f2e9cdd136bbe631e88aa *inst/doc/using_lumberjack.pdf
 b5f156d5894a8011f1a75fd42ed01e1d *inst/tinytest/runs/auto_dump.R
 41b22822e0c5ce35f566093532d59a4b *inst/tinytest/runs/dump_test.R
 4019c47b57e90d0698b1dad2d37a9662 *inst/tinytest/runs/multiple_loggers.R
