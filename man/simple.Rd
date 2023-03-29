@@ -58,6 +58,7 @@ read.csv(logfile,stringsAsFactors=FALSE)
 Other loggers: 
 \code{\link{cellwise}},
 \code{\link{expression_logger}},
-\code{\link{filedump}}
+\code{\link{filedump}},
+\code{\link{no_log}}
 }
 \concept{loggers}

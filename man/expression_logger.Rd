@@ -56,6 +56,7 @@ read.csv(logfile)
 Other loggers: 
 \code{\link{cellwise}},
 \code{\link{filedump}},
+\code{\link{no_log}},
 \code{\link{simple}}
 }
 \concept{loggers}

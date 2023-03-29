@@ -89,6 +89,7 @@ logger$logdata()
 Other loggers: 
 \code{\link{expression_logger}},
 \code{\link{filedump}},
+\code{\link{no_log}},
 \code{\link{simple}}
 }
 \concept{loggers}

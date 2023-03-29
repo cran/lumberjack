@@ -68,6 +68,7 @@ dir(file.path(tempdir(),"filedump"))
 Other loggers: 
 \code{\link{cellwise}},
 \code{\link{expression_logger}},
+\code{\link{no_log}},
 \code{\link{simple}}
 }
 \concept{loggers}
